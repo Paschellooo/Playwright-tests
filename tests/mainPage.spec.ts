@@ -1,15 +1,15 @@
 import { test, expect, Page, Locator } from '@playwright/test';
 import { text } from 'stream/consumers';
 interface elements {
-  locator: (page:page) => Locator;
-  name: string;
-  text: string;
-  attribute: {
+  locator: (page: Page) => Locator;
+  name?: string;
+  text?: string;
+  attribute?: {
     type:string;
     value: string;
   };
 }
-const elements: Elements[] = [
+const elements: elements [] = [
   { locator: (page: Page): Locator => page.getByRole('link', { name: 'Playwright logo Playwright' }),
   name: 'Playwright logo link',
   text: 'Playwright',
@@ -57,14 +57,14 @@ const elements: Elements[] = [
     value: '/community/welcome',
    },
   },
-  { locator: (page) => page.getByRole('link', { name: 'GitHub repository' }),
+  { locator: (page: Page): Locator => page.getByRole('link', { name: 'GitHub repository' }),
   name: 'Github link',
   attribute: {
     type:'href',
     value: 'https://github.com/microsoft/playwright',
    },
   },
-   { locator: (page) => page.getByLabel('Switch between dark and light mode'),
+   { locator: (page: Page): Locator => page.getByLabel('Switch between dark and light mode'),
     name: 'Dark-light mode'
   },
 ];
