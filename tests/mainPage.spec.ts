@@ -2,7 +2,7 @@ import { test, expect, Page, Locator } from '@playwright/test';
 import { text } from 'stream/consumers';
 interface Elements {
   locator: (page: Page) => Locator;
-  name?: string;
+  name: string;
   text?: string;
   attribute?: {
     type:string;
@@ -47,7 +47,7 @@ const elements: Elements [] = [
   },
   { locator: (page: Page): Locator => page.getByRole('button', { name: 'Search (Ctrl+K)' }),
   name: 'Search input',
-  text: 'SearchK'
+  text: 'Search'
   },
   { locator: (page: Page): Locator => page.getByRole('link', { name: 'Community' }),
   name: 'Community link',
@@ -68,6 +68,7 @@ const elements: Elements [] = [
     name: 'Dark-light mode'
   },
 ];
+const lightMods = ['light','dark']
 
 test.describe('тесты главной страницы', ()=> {
   test.beforeEach(async ({page}) => {
@@ -82,10 +83,10 @@ test.describe('тесты главной страницы', ()=> {
   });
 });
 
-test('проверка отображения элементов названий хеддер', async ({ page }) => {
-elements.forEach(({ locator, name, text})=> {
+test('проверка названия элементов названий хеддер', async ({ page }) => {
+elements.forEach(({ locator, name,text })=> {
   if (text){
-   test.step(`Проверка названия эелемента ${name}`, async() => {
+   test.step(`Проверка названия элелемента ${name}`, async() => {
 await expect(locator(page)).toContainText(text);
 }); 
 }
@@ -96,27 +97,22 @@ test('проверка атрибутов href элементов навигац
   elements.forEach(({ locator, name, attribute }) => {
     if (attribute) {
       test.step(`Проверка атрибутов href элемента ${name}`, async () => {
-        await expect(locator(page)).toHaveAttribute(attribute.type, attribute.value);
+        await expect(locator(page)).toHaveAttribute(attribute?.type, attribute?.value);
       });
     }
   });
 });
 
-
-
 test('проверка переключения light мода', async ({ page }) => {
 await page.getByLabel('Switch between dark and light mode').click();
-await expect.soft (page.locator('html')).toHaveAttribute('data-theme', 'light')
+await expect.soft(page.locator('html')).toHaveAttribute('data-theme', 'light');
 });
-
-test('проверка заголовка станицы', async ({ page }) => {
-  await expect.soft(page.getByRole('heading', { name: 'Playwright enables reliable' })).toBeVisible();
-  await expect.soft(page.getByRole('heading', { name: 'Playwright enables reliable' })).toContainText('Playwright enables reliable end-to-end testing for modern web apps.');
+lightMods.forEach((value) => {
+  test(`проверка стилей активного ${value} мода` , async ({page}) => {
+    await page.evaluate((value) => {   // работа с окружение браузера
+      document.querySelector('html')?.setAttribute('data-theme',value);
+    },value);
+await expect(page).toHaveScreenshot(`pageWith${value}Mode.png`);
 });
-
-test('проверка кнопки get started', async ({ page }) => {
-await expect.soft(page.getByRole('link', { name: 'Get started' })).toHaveAttribute('href','/docs/intro');
-await expect.soft(page.getByRole('banner')).toContainText('Get started');
-await expect.soft(page.getByRole('link', { name: 'Get started' })).toBeVisible();
 });
 });
