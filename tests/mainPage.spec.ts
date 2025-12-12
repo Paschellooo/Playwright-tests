@@ -1,6 +1,6 @@
 import { test, expect, Page, Locator } from '@playwright/test';
 import { text } from 'stream/consumers';
-interface elements {
+interface Elements {
   locator: (page: Page) => Locator;
   name?: string;
   text?: string;
@@ -9,7 +9,7 @@ interface elements {
     value: string;
   };
 }
-const elements: elements [] = [
+const elements: Elements [] = [
   { locator: (page: Page): Locator => page.getByRole('link', { name: 'Playwright logo Playwright' }),
   name: 'Playwright logo link',
   text: 'Playwright',
