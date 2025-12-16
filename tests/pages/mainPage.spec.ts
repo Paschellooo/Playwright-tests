@@ -40,3 +40,4 @@ test.describe('тесты главной страницы', () => {
     await mainPage.setDarkMode();
     await mainPage.checkLayoutWithDarkMode();
     });
+    // 1/55 время
